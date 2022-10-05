@@ -2,6 +2,7 @@ import { Icon, Col, Card, Row} from 'antd';
 import Axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import ImageSlider from '../../utils/ImageSlider';
+import CheckBox from './Sections/CheckBox';
 
 const { Meta } = Card;
 
@@ -11,6 +12,10 @@ function LandingPage() {
     const [Skip, setSkip] = useState(0)
     const [Limit, setLimit] = useState(8)
     const [PostSize, setPostSize] = useState(0)
+    const [Filters, setFilters] = useState({
+        continents : [],
+        price : []
+    })
     
     useEffect(() => {
         const variables={
@@ -24,9 +29,15 @@ function LandingPage() {
         Axios.post('/api/product/getProducts', variables)
             .then(response => {
                 if (response.data.success) {
-                    setProducts([...Products, ...response.data.products])
+                    if(variables.loadMore) {
+                        setProducts([...Products, ...response.data.products])
+                    }
+                    else{
+                        setProducts(response.data.products)
+                    }
 
                     setPostSize(response.data.postSize)
+                
                 } else{
                     alert ('Failed to fetch product data')
                 }
@@ -60,11 +71,43 @@ function LandingPage() {
 
         </Col>
     })
+
+    const showFilteredResults = (filters) => {
+
+        const variables = {
+            skip : 0,
+            limit : Limit,
+            filters : filters
+        }
+
+        getProducts(variables)
+        setSkip(0)
+    }
+
+    const handleFilters = (filters, category) => {
+        const newFilters = { ...Filters }
+
+        newFilters[category] = filters
+
+        if (category === "price"){
+
+        }
+
+        showFilteredResults(newFilters)
+        setFilters(newFilters)
+
+    }
+
     return (
         <div style= {{ width: '75%', margin: '3rem auto' }}>
             <div style= {{ textAlign: 'center' }}>
                 <h2> Travel <Icon type='rocket' /></h2>
             </div>
+
+            <CheckBox
+                handleFilters = {filters => handleFilters (filters, "continents")}
+            />
+
         
             {Products.length === 0?
                 <div style={{ display: 'flex', height: '300px', justifyContent: 'center', alignItems: 'center'}}>
