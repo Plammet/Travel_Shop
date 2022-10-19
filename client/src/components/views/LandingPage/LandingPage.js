@@ -3,6 +3,8 @@ import Axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import ImageSlider from '../../utils/ImageSlider';
 import CheckBox from './Sections/CheckBox';
+import RadioBox from './Sections/RadioBox';
+import { price, continents } from './Sections/Data';
 
 const { Meta } = Card;
 
@@ -84,18 +86,30 @@ function LandingPage() {
         setSkip(0)
     }
 
+    const handlePrice = (value) => {
+        const data = price;
+        let array= [];
+
+        for (let key in data) {       
+            if(data[key]._id === parseInt(value, 10)){
+                array = data[key].array;
+            }
+        }  
+            return array  
+    }
+
     const handleFilters = (filters, category) => {
         const newFilters = { ...Filters }
 
         newFilters[category] = filters
 
         if (category === "price"){
-
+            let priceValues = handlePrice(filters)
+            newFilters[category] = priceValues
         }
 
         showFilteredResults(newFilters)
         setFilters(newFilters)
-
     }
 
     return (
@@ -104,10 +118,20 @@ function LandingPage() {
                 <h2> Travel <Icon type='rocket' /></h2>
             </div>
 
-            <CheckBox
-                handleFilters = {filters => handleFilters (filters, "continents")}
-            />
-
+            <Row gutter = {[16, 16]}>
+                <Col lg = {12} xs={24}>
+                    <CheckBox
+                        list = { continents }
+                        handleFilters = {filters => handleFilters (filters, "continents")}
+                    />
+                </Col>
+                <Col lg = {12} xs={24}>
+                    <RadioBox
+                        list = { price }
+                        handleFilters = {filters => handleFilters (filters, "price")}
+                    />
+                </Col>
+            </Row>
         
             {Products.length === 0?
                 <div style={{ display: 'flex', height: '300px', justifyContent: 'center', alignItems: 'center'}}>
