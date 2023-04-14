@@ -5,6 +5,7 @@ import ImageSlider from '../../utils/ImageSlider';
 import CheckBox from './Sections/CheckBox';
 import RadioBox from './Sections/RadioBox';
 import { price, continents } from './Sections/Data';
+import SearchFeature from './Sections/SearchFeature';
 
 const { Meta } = Card;
 
@@ -14,6 +15,7 @@ function LandingPage() {
     const [Skip, setSkip] = useState(0)
     const [Limit, setLimit] = useState(8)
     const [PostSize, setPostSize] = useState(0)
+    const [SearchTerms, setSearchTerms] = useState("")
     const [Filters, setFilters] = useState({
         continents : [],
         price : []
@@ -52,6 +54,7 @@ function LandingPage() {
         const variables = {
             skip: skip,
             limit: Limit,
+            searchTerm: SearchTerms
         }
         getProducts(variables)
 
@@ -112,11 +115,28 @@ function LandingPage() {
         setFilters(newFilters)
     }
 
+    const updateSearchTerms = (newSearchTerm) => {
+        setSearchTerms(newSearchTerm)
+        
+        const variables = {
+            skip: 0,
+            limit: Limit,
+            filters: Filters,
+            searchTerm: newSearchTerm
+        }
+
+        setSkip(0)
+        setSearchTerms(newSearchTerm)
+
+        getProducts(variables)
+    }
+
     return (
         <div style= {{ width: '75%', margin: '3rem auto' }}>
             <div style= {{ textAlign: 'center' }}>
                 <h2> Travel <Icon type='rocket' /></h2>
             </div>
+            
 
             <Row gutter = {[16, 16]}>
                 <Col lg = {12} xs={24}>
@@ -132,7 +152,13 @@ function LandingPage() {
                     />
                 </Col>
             </Row>
-        
+
+            <div style={{display:'flex', justifyContent:'flex-end', margin:'1rem auto'}}>
+                <SearchFeature
+                    refreshFunction={updateSearchTerms}
+                />
+            </div>
+
             {Products.length === 0?
                 <div style={{ display: 'flex', height: '300px', justifyContent: 'center', alignItems: 'center'}}>
                     <h2>No post yet...</h2>
@@ -148,7 +174,7 @@ function LandingPage() {
             <br/><br/>
 
             { PostSize >= Limit &&
-                <div style= {{ display: 'flex', justifyContent: 'center' }}>
+                <div style= {{ display: 'flex', justifyContent: 'center', margin: '1rem' }}>
                     <button onClick={onLoadMore}>Load More</button>
                 </div>
             }
