@@ -1,0 +1,13 @@
+table{
+
+    vertical-align : middle;
+    text-align : center;
+    width : 90%;
+    margin : 20px auto;
+}
+
+th,td {
+    border-bottom : 1px solid grey;
+    padding : 10px 10px;
+}
+

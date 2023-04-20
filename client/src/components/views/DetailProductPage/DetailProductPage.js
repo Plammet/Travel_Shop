@@ -3,27 +3,26 @@ import ProductImage from './Sections/ProductImage'
 import ProductInfo from './Sections/ProductInfo'
 import { Row, Col } from 'antd'
 import Axios from 'axios';
+import { addToCart } from '../../../_actions/user_actions';
+import { useDispatch } from 'react-redux';
 
 
 
 function DetailProductPage(props) {
-
+    const dispatch = useDispatch();
     const productId = props.match.params.productId
     const [Product, setProduct] = useState([])
-
-    console.log(productId)
 
     useEffect(() => {
         Axios.get(`/api/product/products_by_id?id=${productId}&type=single`)
             .then(response => {
                 setProduct(response.data[0])
-                console.log('success')
-                console.log(Product)
             })
     }, [])
 
-    
-    
+    const addToCartHandler = (productId) => {
+        dispatch(addToCart(productId))
+    }
   
   
     return (
@@ -38,7 +37,10 @@ function DetailProductPage(props) {
                     <ProductImage detail={Product}/>
                 </Col>
                 <Col lg={12} xs={24}>
-                    <ProductInfo detail={Product}/>
+                    <ProductInfo 
+                        addToCart={addToCartHandler}
+                        detail={Product}
+                    />
                 </Col>
             </Row>
         </div>
