@@ -1,4 +1,4 @@
-# Travel_Agency_Web
+# Travel_Shop
   
   React.js, Node.js, Express.js, MongoDB 를 이용한 여행 정보 웹 클론 프로젝트
   
